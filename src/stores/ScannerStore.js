@@ -16,7 +16,7 @@
 
 // @flow
 import { Container } from 'unstated';
-import { NETWORK_LIST, NetworkTypes } from '../constants';
+import { NETWORK_LIST, networkKeys ,networkProtocols } from '../constants';
 import { saveTx } from '../util/db';
 import { brainWalletSign, decryptData, keccak, ethSign } from '../util/native';
 import transaction from '../util/transaction';
@@ -60,7 +60,6 @@ export default class ScannerStore extends Container<ScannerState> {
   state = defaultState;
 
   async setData(data, accountsStore) {
-    console.log(data);
     switch (data.action) {
       case 'signTransaction':
         return await this.setTXRequest(data, accountsStore);
@@ -78,35 +77,38 @@ export default class ScannerStore extends Container<ScannerState> {
     const address = signRequest.data.account;
     const dataToSign = await ethSign(message);
     const sender = accountsStore.getByAddress(address);
+    
     if (!sender || !sender.encryptedSeed) {
       throw new Error(
         `No private key found for ${address} found in your signer key storage.`
       );
     }
+
     this.setState({
       type: 'message',
       sender,
       message,
       dataToSign
     });
+
     return true;
   }
 
   async setTXRequest(txRequest, accountsStore) {
     this.setBusy();
-    console.log(txRequest);
+
     if (!(txRequest.data && txRequest.data.rlp && txRequest.data.account)) {
       throw new Error(`Scanned QR contains no valid transaction`);
     }
-    const tx = await transaction(txRequest.data.rlp);
-    const { ethereumChainId: networkKey = '1' } = tx;
 
+    const tx = await transaction(txRequest.data.rlp);
+    const { ethereumChainId = networkKeys.ETHEREUM } = tx;
     const sender = accountsStore.getById({
-      networkType: NetworkTypes.ETHEREUM,
-      networkKey,
+      protocol: networkProtocols.ETHEREUM,
+      ethereumChainId,
       address: txRequest.data.account
     });
-    const networkTitle = NETWORK_LIST[networkKey].title;
+    const networkTitle = NETWORK_LIST[sender.networkKey].title;
 
     if (!sender || !sender.encryptedSeed) {
       throw new Error(
@@ -117,11 +119,12 @@ export default class ScannerStore extends Container<ScannerState> {
     }
 
     const recipient = accountsStore.getById({
-      networkType: NetworkTypes.ETHEREUM,
+      protocol: networkProtocols.ETHEREUM,
       networkKey: tx.ethereumChainId,
       address: tx.action
     });
     const dataToSign = await keccak(txRequest.data.rlp);
+
     this.setState({
       type: 'transaction',
       sender,
@@ -130,6 +133,7 @@ export default class ScannerStore extends Container<ScannerState> {
       tx,
       dataToSign
     });
+
     return true;
   }
 

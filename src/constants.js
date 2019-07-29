@@ -1,100 +1,69 @@
-import mapValues from 'lodash/mapValues';
-import defaults from 'lodash/defaults';
 import colors from './colors';
 
-export const NetworkTypes = Object.freeze({
+export const networkProtocols = Object.freeze({
   ETHEREUM: 'ethereum',
   SUBSTRATE: 'substrate'
 });
 
-export const EthereumNetworkIds = Object.freeze({
-  OLYMPIC: '0',
-  FRONTIER: '1',
-  EXPANSE: '2',
-  ROPSTEN: '3',
-  RINKEBY: '4',
-  GOERLI: '5',
-  UBIG: '8',
-  KOVAN: '42',
-  CLASSIC: '61',
-  SOKOL: '77',
-  CORE: '99',
-  MUSICOIN: '7762959'
+export const networkKeys = Object.freeze({
+  // Ethereum
+  CLASSIC: 'classic',
+  FRONTIER: 'frontier',
+  GOERLI: 'goerli',
+  KOVAN: 'kovan',
+  ROPSTEN: 'ropsten',
+  // Substrate
+  KUSAMA: 'kusama'
 });
 
-export const SubstrateNetworkIds = Object.freeze({
-  KUSAMA: 's0'
-});
+const defaultEthereumParams = {
+  color: '#F2E265',
+  protocol: networkProtocols.ETHEREUM,
+  secondaryColor: colors.card_text,
+}
 
-const substrateNetworkRaw = {
-  [SubstrateNetworkIds.KUSAMA]: {
-    name: 'kusama',
-    ss58Prefix: 2,
-    balanceModuleId: 123 // This id need to be checked
-  }
-};
+const defaultSubstrateParams = {
+  color: '#4C4646',
+  protocol: networkProtocols.SUBSTRATE,
+  secondaryColor: colors.card_bg,
+}
 
-const ethereumNetworkRaw = {
-  [EthereumNetworkIds.OLYMPIC]: {},
-  [EthereumNetworkIds.FRONTIER]: {
-    title: 'Ethereum',
+export const NETWORK_LIST = Object.freeze({
+  // Substrate
+  [networkKeys.KUSAMA]: {
+    ...defaultSubstrateParams,
+    balanceModuleId: 123, // This id needs to be checked
+    title: 'Kusama',
+    ss58Prefix: 2
+  },
+  // Ethereum
+  [networkKeys.FRONTIER]: {
+    ...defaultEthereumParams,
     color: '#977CF6',
+    ethereumChainId: 1,
     secondaryColor: colors.card_bg,
-    available: true
+    title: 'Ethereum',
   },
-  [EthereumNetworkIds.CLASSIC]: {
-    title: 'Ethereum Classic',
+  [networkKeys.CLASSIC]: {
+    ...defaultEthereumParams,
     color: '#8C7166',
+    ethereumChainId: 61,
     secondaryColor: colors.card_bg,
-    available: true
+    title: 'Ethereum Classic',
   },
-  [EthereumNetworkIds.EXPANSE]: {
-    title: 'Expanse'
+  [networkKeys.ROPSTEN]: {
+    ...defaultEthereumParams,
+    ethereumChainId: 3,
+    title: 'Ropsten Testnet'
   },
-  [EthereumNetworkIds.ROPSTEN]: {
-    title: 'Ropsten Testnet',
-    available: true
+  [networkKeys.GOERLI]: {
+    ...defaultEthereumParams,
+    ethereumChainId: 5,
+    title: 'Görli Testnet'
   },
-  [EthereumNetworkIds.RINKEBY]: {
-    title: 'Rinkeby Testnet'
-  },
-  [EthereumNetworkIds.GOERLI]: {
-    title: 'Görli Testnet',
-    available: true
-  },
-  [EthereumNetworkIds.KOVAN]: {
-    title: 'Kovan Testnet',
-    available: true
-  },
-  [EthereumNetworkIds.SOKOL]: {},
-  [EthereumNetworkIds.CORE]: {},
-  [EthereumNetworkIds.MUSICOIN]: {}
-};
-
-export const ETHEREUM_NETWORK_LIST = mapValues(
-  ethereumNetworkRaw,
-  (ethereumNetwork, ethereumChainId) =>
-    defaults(ethereumNetwork, {
-      protocol: NetworkTypes.ETHEREUM,
-      color: '#F2E265',
-      secondaryColor: colors.card_text,
-      available: false,
-      title: `Ethereum_${ethereumChainId}`,
-      ethereumChainId: ethereumChainId
-    })
-);
-
-const SUBSTRATE_NETWORK_LIST = mapValues(
-  substrateNetworkRaw,
-  (substrateNetwork, substrateNetworkId) =>
-    defaults(substrateNetwork, {
-      protocol: NetworkTypes.SUBSTRATE,
-      color: '#E6007A',
-      secondaryColor: colors.card_bg,
-      available: false
-    })
-);
-
-export const NETWORK_LIST = Object.freeze(
-  Object.assign({}, ETHEREUM_NETWORK_LIST, SUBSTRATE_NETWORK_LIST)
-);
+  [networkKeys.KOVAN]: {
+    ...defaultEthereumParams,
+    ethereumChainId: 42,
+    title: 'Kovan Testnet'
+  }
+});

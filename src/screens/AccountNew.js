@@ -26,7 +26,6 @@ import AccountIconChooser from '../components/AccountIconChooser';
 import Background from '../components/Background';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import TouchableItem from '../components/TouchableItem';
 import { NETWORK_LIST } from '../constants';
 import AccountsStore from '../stores/AccountsStore';
 import { validateSeed } from '../util/account';
@@ -86,8 +85,7 @@ class AccountNewView extends React.Component {
             </View>
             <View style={styles.bottom}>
               <Text style={styles.hintText}>
-                On the next step you will be asked to backup your account, get pen
-                and paper ready
+                You will now be asked to backup your account, get a pen and paper.
               </Text>
               <Button
                 buttonStyles={styles.nextStep}

@@ -24,7 +24,8 @@ import { decryptData, encryptData } from '../util/native';
 export type Account = {
   name: string,
   address: string,
-  networkType: string,
+  ethereumChainId: string, // this one is used in the storage and is sent in an Ethereum TX
+  protocol: string,
   networkKey: string,
   seed: string,
   encryptedSeed: string,
@@ -154,14 +155,6 @@ export default class AccountsStore extends Container<AccountsState> {
       return false;
     }
     return true;
-  }
-
-  lockAccount(account) {
-    const acc = this.state.accounts.get(accountId(account));
-    if (acc) {
-      delete acc.seed;
-    }
-    this.setState({});
   }
 
   async checkPinForSelected(pin) {

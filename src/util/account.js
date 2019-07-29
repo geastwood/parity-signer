@@ -1,24 +1,23 @@
-import { EthereumNetworkIds, NetworkTypes } from '../constants';
+import { NETWORK_LIST, networkKeys, networkProtocols } from '../constants';
 
 export function accountId({
   address,
-  networkType = 'ethereum',
-  networkKey = EthereumNetworkIds.FRONTIER
+  protocol = networkProtocols.ETHEREUM,
+  ethereumChainId = NETWORK_LIST[networkKeys.FRONTIER].ethereumChainId
 }) {
   if (typeof address !== 'string' || address.length === 0) {
     throw new Error(`Couldn't create an accountId, missing address`);
   }
-  return `${networkType}:0x${address.toLowerCase()}@${networkKey}`;
+  return `${protocol}:0x${address.toLowerCase()}@${ethereumChainId}`;
 }
 
 export function empty(account = {}) {
   return {
     name: '',
-    networkType: NetworkTypes.ETHEREUM,
-    networkKey: EthereumNetworkIds.FRONTIER,
+    protocol: networkProtocols.SUBSTRATE,
+    networkKey: networkKeys.KUSAMA,
     seed: '',
-    // address for an empty seed phrase
-    address: '00a329c0648769A73afAc7F9381E08FB43dBEA72',
+    address: '',
     createdAt: new Date().getTime(),
     updatedAt: new Date().getTime(),
     archived: false,
