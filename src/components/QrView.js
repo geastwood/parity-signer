@@ -16,10 +16,10 @@
 
 'use strict';
 
+import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Image, View } from 'react-native';
 import { qrCode } from '../util/native';
-import PropTypes from 'prop-types';
 
 QrView.propTypes = {
   text: PropTypes.string.isRequired
