@@ -19,6 +19,11 @@
 import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Image, View } from 'react-native';
 import { qrCode } from '../util/native';
+import PropTypes from 'prop-types';
+
+QrView.propTypes = {
+  text: PropTypes.string.isRequired
+};
 
 export default function QrView(props) {
   const [qr, setQr] = useState(null);
