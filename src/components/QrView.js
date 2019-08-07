@@ -16,59 +16,46 @@
 
 'use strict';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Image, View } from 'react-native';
-import colors from '../colors';
 import { qrCode } from '../util/native';
 
+export default function QrView(props) {
+  const [qr, setQr] = useState(null);
 
-export default class QrView extends React.PureComponent {
-
-  state = {};
-
-  displayQrCode = async (data) => {
-    try {
-      let qr = await qrCode(data);
-      this.setState({
-        qr: qr
-      });
-    } catch (e) {
-      console.log(e);
+  useEffect(() => {
+    async function displayQrCode(data) {
+      try {
+        let qr = await qrCode(data);
+        setQr(qr);
+      } catch (e) {
+        console.log(e);
+      }
     }
+    displayQrCode(props.text);
+  }, [props.text]);
+
+  const { width: deviceWidth } = Dimensions.get('window');
+  let size = props.size || deviceWidth - 80;
+  let flexBasis = props.height || deviceWidth - 40;
+
+  const renderQr = () => (
+    <View
+      style={[
+        styles.rectangleContainer,
+        { flexBasis, height: flexBasis },
+        props.style
+      ]}
+    >
+      <Image source={{ uri: qr }} style={{ width: size, height: size }} />
+    </View>
+  );
+
+  if (this.props.screen) {
+    return <View style={AppStyles.view}>{renderQr()}</View>;
   }
 
-  componentDidMount() {
-    this.displayQrCode(this.props.text);
-  }
-
-  componentWillReceiveProps(newProps) {
-    if (newProps.text !== this.props.text) {
-      this.displayIcon(newProps.text);
-    }
-  }
-
-  render() {
-    if (this.props.screen) {
-      return <View style={AppStyles.view}>{this.renderQr()}</View>;
-    }
-
-    return this.renderQr();
-  }
-
-  renderQr() {
-    const { width: deviceWidth } = Dimensions.get('window');
-    let size = this.props.size || deviceWidth - 80;
-    let flexBasis = this.props.height || deviceWidth - 40;
-
-    return (
-      <View style={[styles.rectangleContainer, { flexBasis, height: flexBasis }, this.props.style]}>
-        <Image
-          source={{ uri: this.state.qr }}
-          style={{ width: size, height: size }}
-        />
-      </View>
-    );
-  }
+  return renderQr();
 }
 
 const styles = StyleSheet.create({
