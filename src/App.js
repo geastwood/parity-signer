@@ -19,7 +19,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { StatusBar } from 'react-native';
+import {StatusBar, YellowBox} from 'react-native';
 import {
   createAppContainer,
   createStackNavigator,
@@ -57,6 +57,18 @@ import TermsAndConditions from './screens/TermsAndConditions';
 import TxDetails from './screens/TxDetails';
 
 export default class App extends Component {
+
+  constructor(){
+    super();
+    if (__DEV__) {
+      YellowBox.ignoreWarnings([
+        'Warning: componentWillReceiveProps',
+        'Warning: componentWillMount',
+        'Warning: componentWillUpdate'
+      ]);
+    }
+  }
+
   render() {
     return (
       <UnstatedProvider>
@@ -124,7 +136,7 @@ const Screens = createStackNavigator(
             }
           }
         },
-        { 
+        {
           defaultNavigationOptions: globalStackNavigationOptions,
           headerMode: 'screen',
         }
@@ -206,7 +218,7 @@ const Screens = createStackNavigator(
             screen: AccountEdit
           }
         },
-        { 
+        {
           defaultNavigationOptions: globalStackNavigationOptions,
           initialRouteParams: {
             isWelcome: true
