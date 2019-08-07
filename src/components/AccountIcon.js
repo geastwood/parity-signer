@@ -42,14 +42,14 @@ export default function AccountIcon(props) {
   }, [props.seed]);
 
   return (
-    <View style={styles.identIcon}>
+    <View style={styles.identicon}>
       <Image style={props.style || {}} source={{ uri: icon }} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  identIcon: {
+  identicon: {
     alignItems: 'center'
   }
 });
