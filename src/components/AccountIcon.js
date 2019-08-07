@@ -17,58 +17,39 @@
 'use strict';
 
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { blockiesIcon } from '../util/native';
 
-export default class AccountIcon extends React.PureComponent {
+AccountIcon.propTypes = {
+  seed: PropTypes.string.isRequired
+};
 
-  constructor(...args) {
-    super(...args);
-    this.displayIcon = this.displayIcon.bind(this);
-  }
+export default function AccountIcon(props) {
+  const [icon, setIcon] = useState(null);
 
-  static propTypes = {
-    seed: PropTypes.string.isRequired
-  };
-
-  state = {};
-
-  async displayIcon(seed) {
-    try {
-      let icon = await blockiesIcon(seed);
-      this.setState({
-        icon: icon
-      });
-    } catch (e) {
-      console.log(e);
+  useEffect(() => {
+    async function displayIcon(seed) {
+      try {
+        let icon = await blockiesIcon(seed);
+        setIcon(icon);
+      } catch (e) {
+        console.log(e);
+      }
     }
-  }
 
-  componentDidMount() {
-    this.displayIcon(this.props.seed);
-  }
+    displayIcon(props.seed);
+  }, [props.seed]);
 
-  componentWillReceiveProps(newProps) {
-    if (newProps.seed !== this.props.seed) {
-      this.displayIcon(newProps.seed);
-    }
-  }
-
-  render() {
-    return (
-      <View style={styles.identicon}>
-        <Image
-          style={this.props.style || {}}
-          source={{ uri: this.state.icon }}
-        />
-      </View>
-    );
-  }
+  return (
+    <View style={styles.identIcon}>
+      <Image style={props.style || {}} source={{ uri: icon }} />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  identicon: {
+  identIcon: {
     alignItems: 'center'
   }
 });
